@@ -78,6 +78,11 @@ export class McpManager {
       const known = [...this.toolIndex.keys()].join(", ") || "(none)";
       throw new Error(`Unknown tool "${qualifiedName}". Available: ${known}`);
     }
+
+    if (qualifiedName === "delivery__lookup_delivery" && !hasDeliveryLookupFilter(args)) {
+      return deliveryLookupNeedsOrderId();
+    }
+
     const client = this.clients.get(entry.server);
     if (!client) throw new Error(`MCP server "${entry.server}" is not connected.`);
 
@@ -138,6 +143,25 @@ function makeTransport(server: McpServer): Transport {
       );
     }
   }
+}
+
+function hasDeliveryLookupFilter(args: Record<string, unknown>): boolean {
+  for (const key of ["order_id", "id", "status"] as const) {
+    const value = args[key];
+    if (typeof value === "string" && value.trim()) return true;
+  }
+  return false;
+}
+
+function deliveryLookupNeedsOrderId(): Array<{ type: "text"; text: string }> {
+  return [
+    {
+      type: "text",
+      text:
+        "Order lookup requires an order_id, delivery record id, or status filter. " +
+        "The customer did not provide one — ask them for their Wayfair order number (e.g. WF-88421) in your reply instead of listing orders.",
+    },
+  ];
 }
 
 function contentToText(content: unknown): string {

@@ -62,7 +62,9 @@ server.registerTool(
     description:
       "Look up delivery records when the user asks about an order, shipment, delays, or delivery problems. " +
       "Use order_id for Wayfair order numbers (e.g. WF-88421). Use id for a delivery record id (e.g. EX001). " +
-      "Use status to filter (e.g. DELAYED, MISSED_WINDOW), or omit all to list every delivery.",
+      "Use status to filter (e.g. DELAYED, MISSED_WINDOW). " +
+      "If the user asks about their order or delivery but did not provide an order_id, id, or status, do NOT call this tool — " +
+      "reply with a final_answer asking them for their Wayfair order ID (e.g. WF-88421) first.",
     inputSchema: {
       order_id: z
         .string()
@@ -117,10 +119,16 @@ server.registerTool(
       return { content: [{ type: "text", text: formatList(list, "delivery record(s)", ` with status "${s}"`) }] };
     }
 
-    const { ok, status: httpStatus, data } = await fetchJson("/delivery");
-    if (!ok) return apiError(httpStatus);
-    const list = Array.isArray(data) ? (data as JsonRecord[]) : [];
-    return { content: [{ type: "text", text: formatList(list, "delivery record(s)", "") }] };
+    return {
+      content: [
+        {
+          type: "text",
+          text:
+            "Cannot look up delivery without an order_id, delivery record id, or status filter. " +
+            "If the customer asked about their order but did not provide an order ID, ask them for their Wayfair order number (e.g. WF-88421) before calling this tool again.",
+        },
+      ],
+    };
   },
 );
 
