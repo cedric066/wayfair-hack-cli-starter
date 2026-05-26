@@ -14,28 +14,35 @@ def load_reservations():
     with open(RESERVATIONS_PATH) as f:
         return json.load(f)
 
-
 def save_reservations(reservations):
     with open(RESERVATIONS_PATH, "w") as f:
         json.dump(reservations, f, indent=2)
 
-exceptions = json.load(open("data/exceptions.json"))
+deliveries = json.load(open("data/deliveries.json"))
 drivers = json.load(open("data/drivers.json"))
 
-# --- EXCEPTIONS ---
+# --- DELIVERIES ---
 
-@app.route("/exceptions", methods=["GET"])
-def get_exceptions():
-    return jsonify(exceptions)
+@app.route("/delivery", methods=["GET"])
+def get_deliveries():
+    return jsonify(deliveries)
 
-@app.route("/exceptions/<status>", methods=["GET"])
+
+@app.route("/delivery/status/<status>", methods=["GET"])
 def get_by_status(status):
-    filtered = [e for e in exceptions if e["status"] == status]
+    filtered = [e for e in deliveries if e["status"] == status]
     return jsonify(filtered)
 
-@app.route("/exception/<id>", methods=["GET"])
+
+@app.route("/delivery/order/<order_id>", methods=["GET"])
+def get_by_order_id(order_id):
+    filtered = [e for e in deliveries if e["order_id"] == order_id]
+    return jsonify(filtered)
+
+
+@app.route("/delivery/<id>", methods=["GET"])
 def get_by_id(id):
-    match = next((e for e in exceptions if e["id"] == id), None)
+    match = next((e for e in deliveries if e["id"] == id), None)
     return jsonify(match)
 
 # --- DRIVERS ---
