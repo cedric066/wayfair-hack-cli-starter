@@ -11,7 +11,8 @@ import { bundledToolServer, type McpServer } from "../lib/servers.js";
 export function builtinTools(dir: string): McpServer[] {
   return [
     bundledToolServer("filesystem", "filesystem", [dir]), // → src/tools/filesystem.ts
-    bundledToolServer("weather", "weather"), //               → src/tools/weather.ts
+    bundledToolServer("weather", "weather"), //              → src/tools/weather.ts
+    bundledToolServer("delivery", "delivery"), //            → src/tools/delivery.ts
 
     // 👉 Add yours here, e.g.:
     //   bundledToolServer("mine", "myTool"),                     // your src/tools/myTool.ts
