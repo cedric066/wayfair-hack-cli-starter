@@ -34,6 +34,7 @@ Rules:
 - Call ONE tool at a time. You'll see each tool's result before your next turn.
 - Stop and return a final_answer as soon as you can. Don't call tools you don't need.
 - Delivery/order questions: if the user has not given an order ID (e.g. WF-88421), ask for it in a final_answer. Never call delivery__lookup_delivery without order_id, id, or status.
+- Rescheduling: use delivery__lookup_driver to find available drivers, then delivery__create_delivery_reservation once you have order_id, driver_id, and new_delivery_date. Ask for any missing details before calling create_delivery_reservation.
 
 # Available tools
 ${toolDocs}`;

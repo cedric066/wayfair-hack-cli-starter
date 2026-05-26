@@ -38,6 +38,24 @@ async function fetchJson(path: string): Promise<{ ok: boolean; status: number; d
   return { ok: res.ok, status: res.status, data };
 }
 
+async function postJson(
+  path: string,
+  body: Record<string, unknown>,
+): Promise<{ ok: boolean; status: number; data: unknown }> {
+  const res = await fetch(`${baseUrl()}${path}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  let data: unknown;
+  try {
+    data = await res.json();
+  } catch {
+    data = null;
+  }
+  return { ok: res.ok, status: res.status, data };
+}
+
 function apiError(httpStatus: number): { content: Array<{ type: "text"; text: string }> } {
   return {
     content: [
@@ -181,6 +199,57 @@ server.registerTool(
     if (!ok) return apiError(httpStatus);
     const list = Array.isArray(data) ? (data as JsonRecord[]) : [];
     return { content: [{ type: "text", text: formatList(list, "driver(s)", "") }] };
+  },
+);
+
+server.registerTool(
+  "create_delivery_reservation",
+  {
+    title: "Create a delivery reservation",
+    description:
+      "Book a new delivery reservation for a customer when they want to reschedule or confirm a new delivery date. " +
+      "Requires order_id, driver_id, and new_delivery_date (YYYY-MM-DD). " +
+      "Use lookup_driver with available_date first if you need to find an available driver. " +
+      "If the user wants to reschedule but has not provided order_id, driver_id, or the new date, do NOT call this tool — " +
+      "ask for the missing details in a final_answer first.",
+    inputSchema: {
+      order_id: z
+        .string()
+        .describe("Customer order id, e.g. 'WF-88421'."),
+      driver_id: z
+        .string()
+        .describe("Driver id to assign, e.g. 'DRV-201'. Use lookup_driver to find available drivers."),
+      new_delivery_date: z
+        .string()
+        .describe("New delivery date in YYYY-MM-DD format, e.g. '2026-05-28'."),
+      notes: z
+        .string()
+        .optional()
+        .describe("Optional notes about the reservation, e.g. reason for rescheduling."),
+    },
+  },
+  async ({ order_id, driver_id, new_delivery_date, notes }) => {
+    const body: Record<string, unknown> = {
+      order_id: order_id.trim(),
+      driver_id: driver_id.trim(),
+      new_delivery_date: new_delivery_date.trim(),
+    };
+    if (notes?.trim()) body.notes = notes.trim();
+
+    const { ok, status: httpStatus, data } = await postJson("/reservations", body);
+    if (!ok) return apiError(httpStatus);
+
+    const reservation = data as JsonRecord;
+    return {
+      content: [
+        {
+          type: "text",
+          text:
+            `Delivery reservation created successfully:\n${formatRecord(reservation)}\n\n` +
+            `Confirm reservation ${reservation.reservation_id} with the customer.`,
+        },
+      ],
+    };
   },
 );
 

@@ -58,7 +58,10 @@ def get_driver(driver_id):
 
 @app.route("/drivers/available/<date>", methods=["GET"])
 def get_available_drivers(date):
-    available = [d for d in drivers if date in d["available_dates"] and d["active"]]
+    available = [
+        d for d in drivers
+        if d.get("active") and date in d.get("available_slots", {})
+    ]
     return jsonify(available)
 
 # --- RESERVATIONS ---
