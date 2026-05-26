@@ -8,7 +8,8 @@
     "status": "DELAYED",
     "carrier": "FedEx Freight",
     "days_late": 5,
-    "reason": "Stuck in customs"
+    "reason": "Stuck in customs",
+    "driver_id": "DRV-201"
   },
   {
     "id": "EX002",
@@ -19,7 +20,8 @@
     "status": "MISSED_WINDOW",
     "carrier": "XPO Logistics",
     "days_late": 1,
-    "reason": "Driver no show"
+    "reason": "Driver no show",
+    "driver_id": "DRV-305"
   },
   {
     "id": "EX003",
@@ -30,6 +32,7 @@
     "status": "DAMAGED_IN_TRANSIT",
     "carrier": "UPS Freight",
     "days_late": 2,
-    "reason": "Damage reported by carrier"
+    "reason": "Damage reported by carrier",
+    "driver_id": "DRV-412"
   }
 ]

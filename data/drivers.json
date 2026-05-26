@@ -1,0 +1,29 @@
+[
+  {
+    "driver_id": "DRV-201",
+    "name": "Carlos Rivera",
+    "carrier": "FedEx Freight",
+    "rating": 4.2,
+    "available_dates": ["2026-05-28", "2026-05-29", "2026-05-30"],
+    "region": "Boston Metro",
+    "active": true
+  },
+  {
+    "driver_id": "DRV-305",
+    "name": "James Wu",
+    "carrier": "XPO Logistics",
+    "rating": 3.8,
+    "available_dates": ["2026-05-27", "2026-05-28"],
+    "region": "Boston Metro",
+    "active": true
+  },
+  {
+    "driver_id": "DRV-412",
+    "name": "Tony Marsh",
+    "carrier": "UPS Freight",
+    "rating": 4.6,
+    "available_dates": ["2026-05-27", "2026-05-29", "2026-05-31"],
+    "region": "Boston Metro",
+    "active": false
+  }
+]
