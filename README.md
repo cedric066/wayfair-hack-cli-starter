@@ -141,3 +141,8 @@ client, pointed at Subconscious) · `@modelcontextprotocol/sdk` (MCP) · `conf` 
 Built on [Subconscious](https://www.subconscious.dev) and the
 [Model Context Protocol](https://modelcontextprotocol.io). MIT licensed — fork it,
 break it, ship something.
+
+## Other useful references
+
+* [Hackathon page](https://hack.subconscious.dev/)
+* [Subconscious dev platform](https://www.subconscious.dev/platform)
